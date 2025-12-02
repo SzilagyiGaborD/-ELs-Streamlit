@@ -1,0 +1,61 @@
+import streamlit as st
+import pandas as pd 
+import numpy as np
+
+st.header("ha akarsz válassz egy háttérszínt:")
+szin = st.color_picker("Válassz egy színt a háttérhez:", "#ffffff")
+st.write(f"A kiválasztott szín: **{szin}**")
+st.markdown(f'<div style="width: 100px; height: 100px; background-color: {szin};"></div>', unsafe_allow_html=True)
+
+st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background-color: {szin};
+        background-image: linear-gradient(45deg, {szin} 0%, {szin}99 100%);
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+with st.sidebar:
+    st.header("értékek")
+    a = st.slider('a', -5.0, 5.0, 1.0, 0.1)
+    b = st.slider('b', -5.0, 5.0, 1.0, 0.1)
+    c = st.slider('c', -5.0, 5.0, 1.0, 0.1)
+
+    st.write(f"A másik függvény értéke:")
+
+    B = st.slider('B', -5.0, 5.0, 1.0, 0.1)
+    C = st.slider('C', -5.0, 5.0, 1.0, 0.1)
+
+x_min = st.number_input("x-min", -10.0, 10.0, -10.0)
+x_max = st.number_input("x-max", -10.0, 10.0, 10.0)
+
+x = np.linspace(x_min, x_max, 100)
+
+
+y_quadratic = a * x**2 + b * x + c
+g_linear = b * x + c 
+
+df = pd.DataFrame({
+    'x': x,
+    'f(x)': y_quadratic,
+    'g(x)': g_linear
+})
+
+st.latex(f'Másodfokú: f(x) = {a}x^2 + {b}x + {c}')
+st.latex(f'Lineáris: g(x) = {B}x + {C}')
+
+if st.checkbox("Mindkét függvény megjelenítése egy diagramon"):
+    st.line_chart(df.set_index('x'))
+else:
+    col1, col2 = st.columns(2)
+    with col1:
+        st.write("Másodfokú függvény:")
+        st.line_chart(df[['x', 'f(x) másodfoku']].set_index('x'))
+    with col2:
+        st.write("Lineáris függvény:")
+        st.line_chart(df[['x', 'g(x) lineáris']].set_index('x'))
+
