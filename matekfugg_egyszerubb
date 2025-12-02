@@ -1,0 +1,39 @@
+import streamlit as st
+import pandas as pd 
+import numpy as np
+
+st.header("ha akarsz válassz egy háttérszínt:")
+szin = st.color_picker("Válassz egy színt a háttérhez:", "#ffffff")
+st.write(f"A kiválasztott szín: **{szin}**")
+st.markdown(f'<div style="width: 100px; height: 100px; background-color: {szin};"></div>', unsafe_allow_html=True)
+
+st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background-color: {szin};
+        background-image: linear-gradient(45deg, {szin} 0%, {szin}99 100%);
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+with st.sidebar:
+    st.header("fukar")
+    a = st.slider('a', -5.0, 5.0, 1.0, 0.1)
+    b = st.slider('b', -5.0, 5.0, 1.0, 0.1)
+    c = st.slider('c', -5.0, 5.0, 1.0, 0.1)
+
+x_min = st.number_input("x-min", -10.0, 10.0, -5.0)
+x_max = st.number_input("x-max", -10.0, 10.0, 5.0)
+
+x = np.linspace(x_min, x_max, 200)
+
+y = a * x**2 + b * x + c
+
+df = pd.DataFrame({'x' : x, 'f(x)':y})
+
+st.latex(f'függvény: f(x)={a} x**2 + {b}x + {c}')
+st.line_chart(df.set_index('x'))
+
